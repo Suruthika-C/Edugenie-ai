@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EduGenie - AI Learning Assistant</title>
+
+    <link rel="stylesheet"
+          href="/static/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <h1>EduGenie 🎓</h1>
+
+            <p>
+                Google Gemini Powered Learning Assistant
+            </p>
+
+        </header>
+
+
+        <!-- ========================= -->
+        <!-- Q&A -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h2>Ask a Question</h2>
+
+            <textarea
+                id="question"
+                placeholder="Ask your question here..."
+            ></textarea>
+
+            <button onclick="askQuestion()">
+                Get Answer
+            </button>
+
+            <div
+                id="qaResult"
+                class="result">
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- EXPLANATION -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h2>Explain a Topic</h2>
+
+            <input
+                type="text"
+                id="topic"
+                placeholder="Example: Photosynthesis"
+            >
+
+            <button onclick="explainTopic()">
+                Explain
+            </button>
+
+            <div
+                id="explanationResult"
+                class="result">
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- SUMMARY -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h2>Summarize Text</h2>
+
+            <textarea
+                id="summaryText"
+                placeholder="Paste your paragraph here..."
+            ></textarea>
+
+            <button onclick="summarizeText()">
+                Summarize
+            </button>
+
+            <div
+                id="summaryResult"
+                class="result">
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- QUIZ -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h2>Generate Quiz</h2>
+
+            <input
+                type="text"
+                id="quizTopic"
+                placeholder="Example: Python Basics"
+            >
+
+            <button onclick="generateQuiz()">
+                Generate Quiz
+            </button>
+
+            <div
+                id="quizResult"
+                class="result">
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- LEARNING PATH -->
+        <!-- ========================= -->
+
+        <section class="card">
+
+            <h2>Learning Recommendations</h2>
+
+            <input
+                type="text"
+                id="learningTopic"
+                placeholder="Example: Machine Learning"
+            >
+
+            <button onclick="getLearningPath()">
+                Get Learning Path
+            </button>
+
+            <div
+                id="learningResult"
+                class="result">
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <script src="/static/js/app.js"></script>
+
+</body>
+
+</html>
