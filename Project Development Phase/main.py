@@ -32,7 +32,7 @@ tokenizer = AutoTokenizer.from_pretrained(local_model_name)
 local_model = AutoModelForSeq2SeqLM.from_pretrained(local_model_name)
 
 # Gemini model
-model = genai.GenerativeModel("gemini-3.6-flash")
+model = genai.GenerativeModel("gemini-3.5-flash-lite")
 
 
 # =========================================================
@@ -67,6 +67,7 @@ async def home(request: Request):
 # Q&A MODULE
 # =========================================================
 
+
 @app.post("/qa")
 async def question_answer(request: Request):
 
@@ -75,7 +76,6 @@ async def question_answer(request: Request):
     question = data.get("question", "").strip()
 
     if not question:
-
         return JSONResponse(
             content={
                 "error": "Please enter a question."
@@ -84,14 +84,12 @@ async def question_answer(request: Request):
         )
 
     prompt = f"""
-You are EduGenie, an AI educational assistant.
-
-Answer the student's question clearly and accurately.
+Answer the following question in simple and clear language.
 
 Question:
 {question}
 
-Give a concise and easy-to-understand educational answer.
+Give a concise educational answer suitable for a student.
 """
 
     try:
@@ -107,7 +105,6 @@ Give a concise and easy-to-understand educational answer.
         return {
             "error": str(e)
         }
-
 
 # =========================================================
 # EXPLANATION MODULE
@@ -174,7 +171,6 @@ Requirements:
             "error": str(e)
         }
 
-
 # =========================================================
 # SUMMARY MODULE
 # =========================================================
@@ -212,16 +208,33 @@ Text:
 
     try:
 
-        response = model.generate_content(prompt)
+        inputs = tokenizer(
+            prompt,
+            return_tensors="pt",
+            truncation=True,
+            max_length=512
+        )
+
+        outputs = local_model.generate(
+            **inputs,
+            max_length=150,
+            num_beams=4,
+            early_stopping=True
+        )
+
+        summary = tokenizer.decode(
+            outputs[0],
+            skip_special_tokens=True
+        )
 
         return {
-            "summary": response.text
+            "summary": summary
         }
 
     except Exception as e:
 
         return {
-            "error": str(e)
+            "error": f"Summarization error: {str(e)}"
         }
 
 
@@ -242,8 +255,14 @@ def clean_json_response(text):
 
     text = text.replace("```", "")
 
-    return text.strip()
+    # Fix invalid backslash escapes returned by the AI
+    text = re.sub(
+        r'\\(?!["\\/bfnrtu])',
+        r'\\\\',
+        text
+    )
 
+    return text.strip()
 
 @app.post("/quiz")
 async def generate_quiz(request: Request):
@@ -304,16 +323,11 @@ Use this format:
 
         quiz = json.loads(cleaned)
 
-        return {
-            "quiz": quiz
-        }
+        return {"quiz": quiz}
 
     except Exception as e:
 
-        return {
-            "error": f"Quiz generation error: {str(e)}"
-        }
-
+        return {"error": f"Quiz generation error: {str(e)}"}
 
 # =========================================================
 # LEARNING PATH MODULE
